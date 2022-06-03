@@ -2,8 +2,10 @@ const express = require("express")
 const bodyParser = require('body-parser')
 const { writeFile, access } = require("fs/promises")
 const { v4: uuidv4 } = require('uuid');
+const exp = require("constants");
 const app = express()
 app.use(bodyParser.urlencoded({ extended: false }))
+app.use(express.static("static"))
 
 app.post("/documents", (req, res) => {
     const data = req.body.data
@@ -25,12 +27,12 @@ app.get(/\/raw\/\w{32}/, (req, res) => { //获得text/plain接口
     })
 })
 
-app.get("/", (req, res) => {
+app.get(/[\/,\/\w{32}]/, (req, res) => {
     res.setHeader("Content-Type", "text/html")
     res.sendFile(`${__dirname}/static/index.html`)
 })
 
 
 app.listen(3000, "0.0.0.0", () => {
-    console.log("server is listenning in http://0.0.0.0:3000")
+    console.log("server is listenning in http://127.0.0.1:3000")
 })
