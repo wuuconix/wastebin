@@ -45,14 +45,14 @@
         document.querySelector("pre").style.display = "none"
     }
     document.addEventListener("keydown", (e) => {
-        if (e.key == "s" && e.ctrlKey) {
+        if (e.key == "s" && e.ctrlKey) { //ctrl + s
             e.preventDefault()
             fetch("documents", {
                 method: "POST",
                 body: new URLSearchParams({data: document.querySelector("textarea").value})
             }).then(res => res.json()).then(res => {
                 if (res.success) {
-                    window.location.assign(`${res.filename}`)
+                    window.location.assign(`${res.filename}${window.location.hash}`)
                 } else {
                     alert("未知错误")
                 }
@@ -69,7 +69,19 @@
         } else if (e.key == "r" && e.ctrlKey) {
             e.preventDefault()
             if (pathname.length == "32") {
-                window.location.assign(`${window.location.origin}/raw${window.location.pathname}`)
+                window.location.assign(`${window.location.origin}/raw/${pathname}`)
+            }
+        } else if (e.key == "m" && e.ctrlKey) {
+            e.preventDefault()
+            if (pathname.length == "32") {
+                window.location.assign(`${window.location.origin}/md/${pathname}${window.location.hash}`)
+            }
+        } else if (e.key == "h" && e.ctrlKey) {
+            e.preventDefault()
+            if (window.location.pathname == "/") {
+                textarea.value = ""
+            } else {
+                window.location.replace(`${window.location.origin}/${window.location.hash}`)
             }
         }
     })

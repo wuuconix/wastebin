@@ -1,0 +1,75 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>Marked in the browser</title>
+    <script src="/marked.min.js"></script>
+</head>
+<body>
+    <article class="markdown-body">
+        <div id="content"></div>
+    </article>
+
+</body>
+</html>
+
+<script>
+    const pathname = window.location.pathname.slice(4)
+    const head = document.querySelector("head")
+    const title = document.querySelector("title")
+    const body = document.querySelector("body")
+
+    if(window.location.hash == "#dark") {
+        const link = document.createElement("link")
+        link.rel = "stylesheet"
+        link.href = "/github-markdown-dark.css"
+        head.appendChild(link)
+        title.textContent = "wastebin - dark"
+        body.style.backgroundColor = "#282c34"
+    } else { //如果不是#dark 则设置为light模式
+        window.location.hash = "#light"
+        const link = document.createElement("link")
+        link.rel = "stylesheet"
+        link.href = "/github-markdown-light.css"
+        head.appendChild(link)
+        title.textContent = "wastebin - light"
+        body.style.backgroundColor = "#efecf4"
+    }
+    if (pathname.length == "32") {
+        fetch(`/raw/${pathname}`).then(res => res.text()).then(res => {
+            document.getElementById('content').innerHTML = marked.parse(res);
+        })
+    }
+
+    document.addEventListener("keydown", (e) => {
+        if (e.key == "b" && e.ctrlKey) {
+            e.preventDefault()
+            if (window.location.hash == "#light") {
+                window.location.hash = "#dark"
+                window.location.reload()
+            } else {
+                window.location.hash = "#light"
+                window.location.reload()
+            }
+        } else if (e.key == "r" && e.ctrlKey) {
+            e.preventDefault()
+            if (pathname.length == "32") {
+                window.location.assign(`${window.location.origin}/raw/${pathname}`)
+            }
+        } else if (e.key == "m" && e.ctrlKey) {
+            e.preventDefault()
+            if (pathname.length == "32") {
+                window.location.assign(`${window.location.origin}/${pathname}${window.location.hash}`)
+            }
+        } else if (e.key == "h" && e.ctrlKey) {
+            e.preventDefault()
+            window.location.assign(`${window.location.origin}/${window.location.hash}`)
+        }
+    })
+</script>
+
+<style>
+    .markdown-body {
+        padding: 0px 16px;
+    }
+</style>

@@ -9,6 +9,7 @@
 + ctrl + s 保存代码，生成永久链接。页面将会利用hightlight.js进行高亮
 + ctrl + b 切换主题，有onedark的黑夜模式和atelier-cave-light的明亮模式
 + ctrl + r 进入纯文本页面
++ ctrl + m 在代码高亮界面进入markdown预览界面，反之则进入代码界面
 
 页面截图
 

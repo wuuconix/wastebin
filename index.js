@@ -26,10 +26,21 @@ app.get(/\/raw\/\w{32}/, (req, res) => { //获得text/plain接口
     })
 })
 
+app.get(/\/md\//, (req, res) => {
+    res.setHeader("Content-Type", "text/html")
+    res.sendFile(`${__dirname}/static/markdown.html`)
+})
+
 app.get(/[\/,\/\w{32}]/, (req, res) => {
     res.setHeader("Content-Type", "text/html")
     res.sendFile(`${__dirname}/static/index.html`)
 })
+
+// app.get(/\/markdown\/\w{32}]/, (req, res) => {
+//     res.setHeader("Content-Type", "text/html")
+//     res.sendFile(`${__dirname}/static/markdown.html`)
+// })
+
 
 
 app.listen(7777, "0.0.0.0", () => {
