@@ -1,0 +1,51 @@
+<html>
+	<head>
+		<title>wastebin</title>
+		<meta charset="utf-8" />
+	</head>
+	<body>
+		<textarea spellcheck="false" autofocus></textarea>
+	</body>
+</html>
+
+<script>
+    document.addEventListener("keydown", (e) => {
+        console.log(e)
+        if (e.key == "s" && e.ctrlKey) {
+            e.preventDefault()
+            fetch("documents", {
+                method: "POST",
+                body: new URLSearchParams({data: document.querySelector("textarea").value})
+            }).then(res => res.json()).then(res => {
+                console.log(res)
+                if (res.success) {
+                    window.location.assign(`raw/${res.filename}`)
+                } else {
+                    alert("未知错误")
+                }
+            })
+        }
+    })
+</script>
+<style>
+    body, html {
+        box-sizing: border-box;
+        width: 100%;
+        height: 100%;
+        background-color: #002B36;
+        margin: 0;
+        padding: 0;
+    }
+    body {
+        padding: 20px 50px;
+    }
+    textarea {
+        width: 100%;
+        height: 100%;
+        background-color: transparent;
+        color: white;
+        outline: none;
+        resize: none;
+        border-style: none;
+    }
+</style>
