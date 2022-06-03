@@ -2,7 +2,6 @@ const express = require("express")
 const bodyParser = require('body-parser')
 const { writeFile, access } = require("fs/promises")
 const { v4: uuidv4 } = require('uuid');
-const exp = require("constants");
 const app = express()
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(express.static("static"))
@@ -33,6 +32,6 @@ app.get(/[\/,\/\w{32}]/, (req, res) => {
 })
 
 
-app.listen(3000, "0.0.0.0", () => {
-    console.log("server is listenning in http://127.0.0.1:3000")
+app.listen(7777, "0.0.0.0", () => {
+    console.log("server is listenning in http://127.0.0.1:7777")
 })
