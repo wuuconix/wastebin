@@ -1,3 +1,4 @@
 data/*
+!data/47b6ab7e104348efa779824e844690ae
 node_modules
 package-lock.json
