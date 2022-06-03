@@ -13,10 +13,13 @@
 页面截图
 
 + 亮色 
+
     ![image](https://tvax1.sinaimg.cn/large/007YVyKcly1h2v3t49mb1j30jm0lmtjj.jpg)
 + 暗色
+
     ![image](https://tva3.sinaimg.cn/large/007YVyKcly1h2v3ty4asgj30it0lkwp1.jpg)
 + 纯文本
+
     ![image](https://tvax3.sinaimg.cn/large/007YVyKcly1h2v3uf2x29j30hy0h9420.jpg)
 
 预览链接
