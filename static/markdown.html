@@ -64,6 +64,9 @@
         } else if (e.key == "h" && e.ctrlKey) {
             e.preventDefault()
             window.location.assign(`${window.location.origin}/${window.location.hash}`)
+        } else if (e.key == "e" && e.ctrlKey && pathname.length == 32) { //edit mode
+            e.preventDefault()
+            window.location.replace(`${window.location.origin}/?edit=${pathname}${window.location.hash}`)
         }
     })
 </script>

@@ -17,6 +17,7 @@
     const body = document.querySelector("body")
     const textarea = document.querySelector("textarea")
     const title = document.querySelector("title")
+    const edit = new URL(window.location.href).searchParams.get("edit") //得到edit这个query
     if(window.location.hash == "#dark") {
         const link = document.createElement("link")
         link.rel = "stylesheet"
@@ -44,6 +45,15 @@
     } else { //直接访问index.html
         document.querySelector("pre").style.display = "none"
     }
+    if (edit) {
+        if (edit.length != 32) { // illeagle filename
+            window.location.replace("/")
+        } else {
+            fetch(`raw/${edit}`).then(res => res.text()).then(res => {
+                textarea.value = res
+            }) 
+        }
+    }
     document.addEventListener("keydown", (e) => {
         if (e.key == "s" && e.ctrlKey) { //ctrl + s
             e.preventDefault()
@@ -60,7 +70,7 @@
                     }
                 })
             }
-        } else if (e.key == "b" && e.ctrlKey) {
+        } else if (e.key == "b" && e.ctrlKey) { //black / light
             e.preventDefault()
             if (window.location.hash == "#light") {
                 window.location.hash = "#dark"
@@ -69,23 +79,26 @@
                 window.location.hash = "#light"
                 window.location.reload()
             }
-        } else if (e.key == "r" && e.ctrlKey) {
+        } else if (e.key == "r" && e.ctrlKey) { //raw mode
             e.preventDefault()
             if (pathname.length == "32") {
                 window.location.assign(`${window.location.origin}/raw/${pathname}`)
             }
-        } else if (e.key == "m" && e.ctrlKey) {
+        } else if (e.key == "m" && e.ctrlKey) { //markdown mode
             e.preventDefault()
             if (pathname.length == "32") {
                 window.location.assign(`${window.location.origin}/md/${pathname}${window.location.hash}`)
             }
-        } else if (e.key == "h" && e.ctrlKey) {
+        } else if (e.key == "h" && e.ctrlKey) { //go home
             e.preventDefault()
-            if (window.location.pathname == "/") {
+            if (window.location.pathname == "/" && !edit) {
                 textarea.value = ""
             } else {
                 window.location.replace(`${window.location.origin}/${window.location.hash}`)
             }
+        } else if (e.key == "e" && e.ctrlKey && pathname.length == 32) { //edit mode
+            e.preventDefault()
+            window.location.replace(`${window.location.origin}/?edit=${pathname}${window.location.hash}`)
         }
     })
 </script>
