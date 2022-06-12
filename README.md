@@ -12,6 +12,7 @@
 + `ctrl + h` 在代码高亮界面或者markdown预览界面按下能回到项目主页，在项目主页按下则清空输出
 + `ctrl + r` 进入纯文本页面
 + `ctrl + e` 在代码高亮页面或者markdown预览页面按下能够重新编辑代码
++ `alt + m` 思维导图和markdown预览界面互相转化
 
 页面截图
 
@@ -29,6 +30,10 @@
 
     ![image](https://tva3.sinaimg.cn/large/007YVyKcly1h2v71wdr37j30j50gcjut.jpg)
 
++ mindmap思维导图
+
+    ![image](https://tvax2.sinaimg.cn/large/007YVyKcly1h35d1zgu9tj31hc0o44gb.jpg)
+
 预览链接
 
 https://paste.wuuconix.link
@@ -39,3 +44,4 @@ https://paste.wuuconix.link
 + [marked](https://github.com/markedjs/marked) 快速markdown渲染
 + [highlight.js](https://github.com/highlightjs/highlight.js) 优秀代码高亮
 + [github-markdown-css](https://github.com/sindresorhus/github-markdown-css) 漂亮的markdown css样式
++ [markup](https://github.com/gera2ld/markmap) 快速markdown生成mindmap思维导图
