@@ -78,7 +78,7 @@
             window.location.replace(`${window.location.origin}/?edit=${pathname}${window.location.hash}`)
         } else if (e.key == "m" && e.altKey && pathname.length == 32) { //edit mode
             e.preventDefault()
-            window.location.replace(`${window.location.origin}/mm/${pathname}`)
+            window.location.replace(`${window.location.origin}/mm/${pathname}${window.location.hash}`)
         }
     })
 </script>

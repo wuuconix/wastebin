@@ -17,10 +17,6 @@
 <script>
     const pathname = window.location.pathname.slice(4)
     const markupDiv = document.querySelector(".markmap")
-    const div = document.createElement("div")
-    div.className = "notification"
-    div.textContent = "MindMap Mode"
-    document.querySelector("body").appendChild(div)
 
     if (pathname.length == "32") {
         fetch(`/raw/${pathname}`).then(res => res.text()).then(res => {
@@ -30,16 +26,27 @@
     } else {
         window.location.assign(`${window.location.origin}`)
     }
+
     document.addEventListener("keydown", (e) => {
         console.log(e)
-        if (e.key == "m" && e.altKey) {
+        if (e.code == "KeyM" && e.altKey) {
             e.preventDefault()
             if (pathname.length == "32") {
-                window.location.assign(`${window.location.origin}/md/${pathname}#light`)
+                window.location.assign(`${window.location.origin}/md/${pathname}${window.location.hash}`)
+            }
+        } else if (e.code == "KeyB" && e.ctrlKey) {
+            e.preventDefault()
+            if (window.location.hash == "#light") {
+                window.location.hash = "#dark"
+                window.location.reload()
+            } else {
+                window.location.hash = "#light"
+                window.location.reload()
             }
         }
     })
 </script>
+
 <style>
     @import url("/cascadia-code.css");
     * {
@@ -60,7 +67,6 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        background-color: #efecf4;
     }
     .markmap > svg {
         width: 100%;
@@ -93,3 +99,20 @@
         100% { opacity: 0; top: 10px; }
     }
 </style>
+<script>
+    let mode = "MindMap Mode"
+    if(window.location.hash == "#dark") {
+        document.styleSheets[0].insertRule(".markmap { background-color: #282c34 !important; }", 1)
+        document.styleSheets[0].insertRule("foreignObject div { color: white !important; }", 1)
+        mode += " - dark"
+    } else { //如果不是#dark 则设置为light模式
+        window.location.hash = "#light"
+        document.styleSheets[0].insertRule(".markmap { background-color: #efecf4 !important; }", 2)
+        document.styleSheets[0].insertRule("foreignObject div { color: black !important; }", 2)
+        mode += " - light"
+    }
+    const div = document.createElement("div")
+    div.className = "notification"
+    div.textContent = mode
+    document.querySelector("body").appendChild(div)
+</script>
