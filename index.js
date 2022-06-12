@@ -35,6 +35,11 @@ app.get(/\/md\//, (req, res) => {
     res.sendFile(`${__dirname}/static/markdown.html`)
 })
 
+app.get(/\/mm\//, (req, res) => {
+    res.setHeader("Content-Type", "text/html")
+    res.sendFile(`${__dirname}/static/mindmap.html`)
+})
+
 app.get(/[\/,\/\w{32}]/, (req, res) => {
     res.setHeader("Content-Type", "text/html")
     res.sendFile(`${__dirname}/static/index.html`)

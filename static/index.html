@@ -1,6 +1,6 @@
 <html>
     <head>
-        <title>wastebin - light</title>
+        <title>wastebin</title>
         <meta charset="utf-8" />
         <script src="/highlight.min.js"></script>
         <link rel="icon" href="https://img-blog.csdnimg.cn/e56dce0aa10247b2b82e984e0601a6cb.png">
@@ -25,16 +25,15 @@
         head.appendChild(link)
         body.style.backgroundColor = "#282c34"
         textarea.style.color = "white"
-        title.textContent = "wastebin - dark"
     } else { //如果不是#dark 则设置为light模式
         window.location.hash = "#light"
         const link = document.createElement("link")
         link.rel = "stylesheet"
         link.href = "/atelier-cave-light.css"
         head.appendChild(link)
-        title.textContent = "wastebin - light"
     }
     if (pathname.length == "32") {
+        title.textContent = "wastebin - highlight"
         fetch(`raw/${pathname}`).then(res => res.text()).then(res => {
             textarea.style.display = "none" //隐藏textarea
             document.querySelector("code").textContent = res
@@ -44,6 +43,7 @@
         window.location.replace("/")
     } else { //直接访问index.html
         document.querySelector("pre").style.display = "none"
+        title.textContent = "wastebin - edit"
     }
     if (edit) {
         if (edit.length != 32) { // illeagle filename

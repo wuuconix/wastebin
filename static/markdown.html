@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8"/>
-    <title>Marked in the browser</title>
+    <title>wastebin - markdown</title>
     <script src="/marked.min.js"></script>
 </head>
 <body>
@@ -16,7 +16,6 @@
 <script>
     const pathname = window.location.pathname.slice(4)
     const head = document.querySelector("head")
-    const title = document.querySelector("title")
     const body = document.querySelector("body")
 
     if(window.location.hash == "#dark") {
@@ -24,7 +23,6 @@
         link.rel = "stylesheet"
         link.href = "/github-markdown-dark.css"
         head.appendChild(link)
-        title.textContent = "wastebin - dark"
         body.style.backgroundColor = "#282c34"
     } else { //如果不是#dark 则设置为light模式
         window.location.hash = "#light"
@@ -32,13 +30,14 @@
         link.rel = "stylesheet"
         link.href = "/github-markdown-light.css"
         head.appendChild(link)
-        title.textContent = "wastebin - light"
         body.style.backgroundColor = "#efecf4"
     }
     if (pathname.length == "32") {
         fetch(`/raw/${pathname}`).then(res => res.text()).then(res => {
             document.getElementById('content').innerHTML = marked.parse(res);
         })
+    } else {
+        window.location.assign(`${window.location.origin}`)
     }
 
     let mode = "" //mode for notification
@@ -78,6 +77,9 @@
         } else if (e.key == "e" && e.ctrlKey && pathname.length == 32) { //edit mode
             e.preventDefault()
             window.location.replace(`${window.location.origin}/?edit=${pathname}${window.location.hash}`)
+        } else if (e.key == "m" && e.altKey && pathname.length == 32) { //edit mode
+            e.preventDefault()
+            window.location.replace(`${window.location.origin}/mm/${pathname}`)
         }
     })
 </script>
