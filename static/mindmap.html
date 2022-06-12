@@ -8,7 +8,44 @@
     <div class="markmap"></div>
 </body>
 </html>
+<script>
+    window.markmap = {
+      autoLoader: { manual: true },
+    };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/markmap-autoloader"></script>
+<script>
+    const pathname = window.location.pathname.slice(4)
+    const markupDiv = document.querySelector(".markmap")
+    const div = document.createElement("div")
+    div.className = "notification"
+    div.textContent = "MindMap Mode"
+    document.querySelector("body").appendChild(div)
+
+    if (pathname.length == "32") {
+        fetch(`/raw/${pathname}`).then(res => res.text()).then(res => {
+            markupDiv.innerHTML = res
+            markmap.autoLoader.renderAll();
+        })
+    } else {
+        window.location.assign(`${window.location.origin}`)
+    }
+    document.addEventListener("keydown", (e) => {
+        console.log(e)
+        if (e.key == "m" && e.altKey) {
+            e.preventDefault()
+            if (pathname.length == "32") {
+                window.location.assign(`${window.location.origin}/md/${pathname}#light`)
+            }
+        }
+    })
+</script>
 <style>
+    @import url("/cascadia-code.css");
+    * {
+        font-family: 'Cascadia Code', 'Microsoft Yahei';
+    }
+    
     * {
         padding: 0;
         margin: 0;
@@ -32,31 +69,27 @@
     .markmap > svg div {
         user-select: none;
     }
-</style>
-<script>
-    window.markmap = {
-      autoLoader: { manual: true },
-    };
-</script>
-<script src="https://cdn.jsdelivr.net/npm/markmap-autoloader"></script>
-<script>
-    const pathname = window.location.pathname.slice(4)
-    const markupDiv = document.querySelector(".markmap")
-    if (pathname.length == "32") {
-        fetch(`/raw/${pathname}`).then(res => res.text()).then(res => {
-            markupDiv.innerHTML = res
-            markmap.autoLoader.renderAll();
-        })
-    } else {
-        window.location.assign(`${window.location.origin}`)
+    .notification {
+        width: 300px;
+        height: 30px;
+        background-color: #409EFF;
+        transform: translateX(-50%);
+        position: fixed;
+        top: 10px;
+        left: 50%;
+        opacity: 0;
+        border-radius: 10px;
+        animation: slidev 2s;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        line-height: 30px;
+        color: white;
     }
-    document.addEventListener("keydown", (e) => {
-        console.log(e)
-        if (e.key == "m" && e.altKey) {
-            e.preventDefault()
-            if (pathname.length == "32") {
-                window.location.assign(`${window.location.origin}/md/${pathname}#light`)
-            }
-        }
-    })
-</script>
+    @keyframes slidev {
+        0% { opacity: 1; top: -50px; }
+        10% { opacity: 1; top: 10px; }
+        90% { opacity: 1; top: 10px; }
+        100% { opacity: 0; top: 10px; }
+    }
+</style>
