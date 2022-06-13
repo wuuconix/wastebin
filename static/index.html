@@ -74,7 +74,7 @@
     document.querySelector("body").appendChild(div)
 
     document.addEventListener("keydown", (e) => {
-        if (e.key == "s" && e.ctrlKey) { //ctrl + s
+        if (e.code == "KeyS" && e.ctrlKey) { //ctrl + s
             e.preventDefault()
             const data = document.querySelector("textarea").value
             if (data != "") {
@@ -89,7 +89,7 @@
                     }
                 })
             }
-        } else if (e.key == "b" && e.ctrlKey) { //black / light
+        } else if (e.code == "KeyB" && e.ctrlKey) { //black / light
             e.preventDefault()
             if (window.location.hash == "#light") {
                 window.location.hash = "#dark"
@@ -98,24 +98,24 @@
                 window.location.hash = "#light"
                 window.location.reload()
             }
-        } else if (e.key == "r" && e.ctrlKey) { //raw mode
+        } else if (e.code == "KeyR" && e.ctrlKey) { //raw mode
             e.preventDefault()
             if (pathname.length == "32") {
                 window.location.assign(`${window.location.origin}/raw/${pathname}`)
             }
-        } else if (e.key == "m" && e.ctrlKey) { //markdown mode
+        } else if (e.code == "KeyM" && e.ctrlKey) { //markdown mode
             e.preventDefault()
             if (pathname.length == "32") {
                 window.location.assign(`${window.location.origin}/md/${pathname}${window.location.hash}`)
             }
-        } else if (e.key == "h" && e.ctrlKey) { //go home
+        } else if (e.code == "KeyH" && e.ctrlKey) { //go home
             e.preventDefault()
             if (window.location.pathname == "/" && !edit) {
                 textarea.value = ""
             } else {
                 window.location.replace(`${window.location.origin}/${window.location.hash}`)
             }
-        } else if (e.key == "e" && e.ctrlKey && pathname.length == 32) { //edit mode
+        } else if (e.code == "KeyE" && e.ctrlKey && pathname.length == 32) { //edit mode
             e.preventDefault()
             window.location.replace(`${window.location.origin}/?edit=${pathname}${window.location.hash}`)
         }

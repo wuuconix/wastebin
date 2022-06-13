@@ -51,7 +51,7 @@
     document.querySelector("body").appendChild(div)
 
     document.addEventListener("keydown", (e) => {
-        if (e.key == "b" && e.ctrlKey) {
+        if (e.code == "KeyB" && e.ctrlKey) {
             e.preventDefault()
             if (window.location.hash == "#light") {
                 window.location.hash = "#dark"
@@ -60,23 +60,23 @@
                 window.location.hash = "#light"
                 window.location.reload()
             }
-        } else if (e.key == "r" && e.ctrlKey) {
+        } else if (e.code == "KeyR" && e.ctrlKey) {
             e.preventDefault()
             if (pathname.length == "32") {
                 window.location.assign(`${window.location.origin}/raw/${pathname}`)
             }
-        } else if (e.key == "m" && e.ctrlKey) {
+        } else if (e.code == "KeyM" && e.ctrlKey) {
             e.preventDefault()
             if (pathname.length == "32") {
                 window.location.assign(`${window.location.origin}/${pathname}${window.location.hash}`)
             }
-        } else if (e.key == "h" && e.ctrlKey) {
+        } else if (e.code == "KeyH" && e.ctrlKey) {
             e.preventDefault()
             window.location.assign(`${window.location.origin}/${window.location.hash}`)
-        } else if (e.key == "e" && e.ctrlKey && pathname.length == 32) { //edit mode
+        } else if (e.code == "KeyE" && e.ctrlKey && pathname.length == 32) { //edit mode
             e.preventDefault()
             window.location.replace(`${window.location.origin}/?edit=${pathname}${window.location.hash}`)
-        } else if (e.key == "m" && e.altKey && pathname.length == 32) { //edit mode
+        } else if (e.code == "KeyM" && e.altKey && pathname.length == 32) { //edit mode
             e.preventDefault()
             window.location.replace(`${window.location.origin}/mm/${pathname}${window.location.hash}`)
         }
