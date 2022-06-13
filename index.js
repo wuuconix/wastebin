@@ -8,7 +8,6 @@ app.use(express.static("static"))
 
 app.post("/documents", (req, res) => {
     const data = req.body.data ?? ""
-    console.log(req.body.data)
     if (data == "") {
         res.json({error: "data must be provided and not empty"}) //解决undefined和空字符串两种不合理情况
         return
@@ -17,10 +16,10 @@ app.post("/documents", (req, res) => {
     writeFile(`./data/${filename}`, data).then(() => {
         res.json({success: "ok", filename})
     })
+    console.log(`${"-".repeat(14)}uuid${"-".repeat(14)}\n${filename}\n${"-".repeat(12)}content${"-".repeat(13)}\n${data}\n${"-".repeat(32)}`)
 })
 
 app.get(/\/raw\/\w{32}/, (req, res) => { //获得text/plain接口
-    console.log()
     const filename = req._parsedUrl.pathname.slice(5)
     access(`./data/${filename}`).then(() => {
         res.setHeader("Content-Type", "text/plain;charset=UTF-8")
