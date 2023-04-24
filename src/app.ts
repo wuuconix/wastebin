@@ -6,7 +6,7 @@ window.addEventListener("hashchange", () => {
 })
 
 async function fetchHtml() {
-  const filename = location.hash.slice(1) ?? ""
+  const filename = location.hash.slice(1) || "hello.md"
   console.log(filename)
   if (filename) {
     const html = await (await fetch(`${config.api}/parse/${filename}`)).text()
