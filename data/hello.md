@@ -9,4 +9,6 @@ const gretting: string = "hello world"
 console.log(greeting)
 ```
 
-![setu](https://api.wuuconix.link/setu?redirect)
+And here is random setu as your gift!
+
+![setu](https://api.wuuconix.link/setu?redirect&no-store)

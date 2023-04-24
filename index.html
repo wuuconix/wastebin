@@ -5,27 +5,23 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Wastebin</title>
-  <link rel="stylesheet" href="https://jsd.onmicrosoft.cn/gh/highlightjs/highlight.js@latest/src/styles/github.css">
-  <link rel="stylesheet" href="https://jsd.onmicrosoft.cn/npm/github-markdown-css@latest/github-markdown-light.css">
+  <script type="module" src="./build/app.js"></script>
   <style>
-    .markdown-body {
-      box-sizing: border-box;
-      min-width: 200px;
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 45px;
+    html, body, iframe {
+      height: 100%;
+      margin: 0;
+      padding: 0;
     }
-    @media (max-width: 767px) {
-      .markdown-body {
-        padding: 15px;
-      }
+    body {
+      overflow: hidden;
+    }
+    iframe {
+      width: 100%;
+      border: 0;
     }
   </style>
-  <script type="module" src="./build/app.js"></script>
 </head>
 <body>
-<div class="markdown-body">
-
-</div>
+  <iframe sandbox frameborder="0"></iframe>
 </body>
 </html>
