@@ -1,4 +1,5 @@
 data/*
-!data/47b6ab7e104348efa779824e844690ae
+!data/.gitkeep
 node_modules
 package-lock.json
+build/*
