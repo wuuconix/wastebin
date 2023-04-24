@@ -22,7 +22,7 @@ app.post("/add/:filename", async (req, res) => {
   try {
     const { code } = req.body
     await writeFile(path, code)
-    return res.json({ url: `${config.api}/raw/${filename}` })
+    return res.json({ url: `${config.api}/view/#${filename}` })
   } catch(e) {
     console.log(e)
     return res.json({ err: "failed to write" })
@@ -56,7 +56,8 @@ app.get("/parse/:filename", async (req, res) => {
     log(`/parse/${filename}`)
     let md = await readFile(path, { encoding: "utf-8" })
     if (extname(filename) != ".md") {    // 如果不是md，则加上代码区域```变成md
-      md = "```" + (extname(filename).slice(1) ?? "") + "\n" + md + "\n" + "```"
+      const rawMark = `🔍raw: ${config.api}/raw/${filename}\n`
+      md = rawMark + "```" + (extname(filename).slice(1) ?? "") + "\n" + md + "\n" + "```"
     }
     const html = parseMdToHtml(md)
     res.setHeader("Content-Type", "text/plain;charset=UTF-8")
@@ -68,7 +69,7 @@ app.get("/parse/:filename", async (req, res) => {
 })
 
 app.listen(7777, "0.0.0.0", () => {
-  console.log("server is listenning in http://127.0.0.1:7777")
+  console.log(`server is listenning in ${config.api}`)
 })
 
 marked.setOptions({
