@@ -107,7 +107,8 @@ app.get("/:filename", async (req, res) => {
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wastebin</title>
+    <link href="https://cn.bing.com/sa/simg/favicon-trans-bg-blue-mg.ico" data-orighref="" rel="icon" />
+    <title>${filename} | Wastebin</title>
     <style>
       html, body, iframe {
         height: 100%;
