@@ -135,6 +135,11 @@ app.get("/:filename", async (req, res) => {
   return res.send(html)
 })
 
+app.get("/", async (req, res) => {
+  const html = await (await fetch(`${config.api}/hello.md`)).text()
+  return res.send(html)
+})
+
 app.listen(7777, "0.0.0.0", () => {
   console.log(`server is listenning in ${config.api}`)
 })
