@@ -21,7 +21,7 @@ app.post("/add/:filename", async (req, res) => {
   try {
     const { code } = req.body
     await writeFile(path, code)
-    return res.json({ url: `${config.api}/view/#${filename}` })
+    return res.json({ url: `${config.api}/${filename}` })
   } catch(e) {
     console.log(e)
     return res.json({ err: "failed to write" })
