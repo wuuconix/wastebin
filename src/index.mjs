@@ -1,11 +1,9 @@
 import { marked } from "marked"
-// @ts-ignore 这个错误是@types/highlightjs 没有点导致的
 import hljs from "highlight.js"
 import express from "express"
 import { access, readFile, writeFile } from "fs/promises"
 import { dirname, normalize, extname } from 'path'
 import { fileURLToPath } from 'url'
-// @ts-ignore 导入json
 import config from "../config.json" assert { type: "json" }
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
@@ -13,6 +11,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url))
 const app = express()
 app.use(express.urlencoded({ extended: true }))   // 支持post body获取
 
+/* add接口 用于新增文件 */
 app.post("/add/:filename", async (req, res) => {
   let { filename } = req.params               // e.g index.js
   const ext = extname(filename)               // .js
@@ -34,6 +33,7 @@ const mimeTypeMap = new Map([
   [".css", "text/css"]
 ])
 
+/* raw接口 返回文件的源码 */
 app.get("/raw/:filename", async (req, res) => {
   const { filename } = req.params
   const path = normalize(`${__dirname}/../data/${filename}`)
@@ -49,6 +49,7 @@ app.get("/raw/:filename", async (req, res) => {
   }
 })
 
+/* parse接口 将各类编程语言转成md中的代码块从而获得高亮提示 */
 app.get("/parse/:filename", async (req, res) => {
   const { filename } = req.params
   const path = normalize(`${__dirname}/../data/${filename}`)
@@ -68,6 +69,72 @@ app.get("/parse/:filename", async (req, res) => {
   }
 })
 
+/* 预览文件 */
+app.get("/:filename", async (req, res) => {
+  const filename = req.params.filename || "hello.md"
+  console.log(filename)
+
+  const mdHtml = await (await fetch(`${config.api}/parse/${filename}`)).text()
+
+  const iframeSrcDoc = `<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wastebin</title>
+  <link rel="stylesheet" href="https://jsd.onmicrosoft.cn/gh/highlightjs/highlight.js@latest/src/styles/github.css">
+  <link rel="stylesheet" href="https://jsd.onmicrosoft.cn/npm/github-markdown-css@latest/github-markdown-light.css">
+  <style>
+    .markdown-body {
+      box-sizing: border-box;
+      min-width: 200px;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 45px;
+    }
+    @media (max-width: 767px) {
+      .markdown-body {
+        padding: 15px;
+      }
+    }
+  </style>
+</head>
+<div class="markdown-body">${mdHtml}</div>
+`
+  
+  const html = `<!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wastebin</title>
+    <style>
+      html, body, iframe {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        overflow: hidden;
+      }
+      iframe {
+        width: 100%;
+        border: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <iframe sandbox="allow-scripts allow-popups allow-popups-to-escape-sandbox"></iframe>
+  </body>
+  </html>
+
+  <script>document.querySelector("iframe").srcdoc=\`${iframeSrcDoc}\`</script>
+
+`
+
+  return res.send(html)
+})
+
 app.listen(7777, "0.0.0.0", () => {
   console.log(`server is listenning in ${config.api}`)
 })
@@ -79,15 +146,15 @@ marked.setOptions({
   langPrefix: 'hljs language-'
 })
 
-function parseMdToHtml(md: string): string {
+function parseMdToHtml(md) {
   return marked.parse(md)
 }
 
-function log(msg: string): void {
+function log(msg) {
   console.log(`${new Date().toLocaleString()}:\n${msg}`)
 }
 
-function getTime(): string {
+function getTime() {
   const date = new Date()
   const year = date.getFullYear()
   const month = String(date.getMonth() + 1).padStart(2, "0")

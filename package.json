@@ -2,12 +2,11 @@
   "name": "wastebin",
   "version": "1.0.0",
   "description": "对hastebin的拙劣仿制",
-  "main": "index.js",
+  "main": "index.mjs",
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc",
-    "start": "tsc && node build/index.js",
+    "start": "node src/index.mjs",
     "conf": "cp wastebin.conf /etc/nginx/sites-enabled/ && service nginx restart"
   },
   "repository": {
