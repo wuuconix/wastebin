@@ -74,6 +74,99 @@ app.get("/:filename", async (req, res) => {
   const filename = req.params.filename || "hello.md"
   console.log(filename)
 
+  /* 如果是欢迎页 不使用iframe渲染 支持拖拽上传文件 */
+  if (filename == "hello.md") {
+    const mdHtml = await (await fetch(`${config.api}/parse/${filename}`)).text()
+    const html = `<!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cn.bing.com/sa/simg/favicon-trans-bg-blue-mg.ico" data-orighref="" rel="icon" />
+    <link rel="stylesheet" href="https://jsd.onmicrosoft.cn/gh/highlightjs/highlight.js@latest/src/styles/github.css">
+    <link rel="stylesheet" href="https://jsd.onmicrosoft.cn/npm/github-markdown-css@latest/github-markdown-light.css">
+    <title>${filename} | Wastebin</title>
+    <style>
+      html, body, iframe {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      iframe {
+        width: 100%;
+        border: 0;
+      }
+      .markdown-body {
+        box-sizing: border-box;
+        min-width: 200px;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 45px;
+      }
+      @media (max-width: 767px) {
+        .markdown-body {
+          padding: 15px;
+        }
+      }
+    </style>
+  </head>
+  <body ondrop="dropHandler(event)" ondragover="dragOverHandler(event)">
+    <div class="markdown-body">${mdHtml}</div>
+  </body>
+  
+  <script>
+    function dragOverHandler(ev) {
+      ev.preventDefault()
+    }
+
+    function dropHandler(ev) {
+      ev.preventDefault()
+
+      if (ev.dataTransfer.items) {
+        for (let i = 0; i < ev.dataTransfer.items.length; i++) {
+          if (ev.dataTransfer.items[i].kind === "file") {
+            const file = ev.dataTransfer.items[i].getAsFile()
+            handleFile(file)
+            break
+          }
+        }
+      } else {
+        for (let i = 0; i < ev.dataTransfer.files.length; i++) {
+          const file = ev.dataTransfer.files[0]
+          handleFile(file)
+          break
+        }
+      }
+    }
+
+    function handleFile(file) {
+      if (file.type == "" || file.type.startsWith("text")) {
+        console.log(file)
+        const reader = new FileReader()
+        reader.readAsText(file, 'UTF-8')
+        reader.onload = async (e) => {
+          console.log(e.target.result)
+          const res = await (await fetch("/add/" + file.name, {
+            method: "post",
+            body: new URLSearchParams({ code: e.target.result })
+          })).json()
+
+          if (res.url) {
+            location.assign(res.url)
+          }
+        }
+      } else {
+        console.log("不支持上传" + file.type + "格式的文件")
+      }
+    }
+  </script>
+</html>
+`
+    
+    return res.send(html)
+  }
+
   const mdHtml = await (await fetch(`${config.api}/parse/${filename}`)).text()
   const mdHtmlBase64 = utf8ToB64(mdHtml)
 
