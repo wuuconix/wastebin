@@ -11,4 +11,6 @@ console.log(greeting)
 
 And here is random setu as your gift!
 
-![setu](https://api.wuuconix.link/setu?redirect&no-store)
+<img alt="setu" src="https://api.wuuconix.link/setu?redirect&no-store" class="animate__animated animate__pulse animate__infinite" style="animation-duration: 3s;">
+
+<!-- ![setu](https://api.wuuconix.link/setu?redirect&no-store) -->

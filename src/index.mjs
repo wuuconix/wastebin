@@ -86,6 +86,7 @@ app.get("/:filename", async (req, res) => {
     <link href="https://cn.bing.com/sa/simg/favicon-trans-bg-blue-mg.ico" data-orighref="" rel="icon" />
     <link rel="stylesheet" href="https://jsd.onmicrosoft.cn/gh/highlightjs/highlight.js@latest/src/styles/github.css">
     <link rel="stylesheet" href="https://jsd.onmicrosoft.cn/npm/github-markdown-css@latest/github-markdown-light.css">
+    <link rel="stylesheet" href="https://cdnjs.onmicrosoft.cn/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <title>${filename} | Wastebin</title>
     <style>
       html, body, iframe {
