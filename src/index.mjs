@@ -9,7 +9,7 @@ import config from "../config.json" assert { type: "json" }
 const __dirname = dirname(fileURLToPath(import.meta.url))
 
 const app = express()
-app.use(express.urlencoded({ extended: true }))   // 支持post body获取
+app.use(express.urlencoded({ extended: true, limit: '10mb' }))   // 支持post body获取
 
 /* add接口 用于新增文件 */
 app.post("/add/:filename", async (req, res) => {
