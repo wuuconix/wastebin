@@ -76,31 +76,6 @@ app.get("/:filename", async (req, res) => {
 
   const mdHtml = await (await fetch(`${config.api}/parse/${filename}`)).text()
 
-  const iframeSrcDoc = `<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Wastebin</title>
-  <link rel="stylesheet" href="https://jsd.onmicrosoft.cn/gh/highlightjs/highlight.js@latest/src/styles/github.css">
-  <link rel="stylesheet" href="https://jsd.onmicrosoft.cn/npm/github-markdown-css@latest/github-markdown-light.css">
-  <style>
-    .markdown-body {
-      box-sizing: border-box;
-      min-width: 200px;
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 45px;
-    }
-    @media (max-width: 767px) {
-      .markdown-body {
-        padding: 15px;
-      }
-    }
-  </style>
-</head>
-<div class="markdown-body">${mdHtml}</div>
-`
-  
   const html = `<!DOCTYPE html>
   <html lang="en">
   <head>
@@ -108,6 +83,8 @@ app.get("/:filename", async (req, res) => {
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cn.bing.com/sa/simg/favicon-trans-bg-blue-mg.ico" data-orighref="" rel="icon" />
+    <link rel="stylesheet" href="https://jsd.onmicrosoft.cn/gh/highlightjs/highlight.js@latest/src/styles/github.css">
+    <link rel="stylesheet" href="https://jsd.onmicrosoft.cn/npm/github-markdown-css@latest/github-markdown-light.css">
     <title>${filename} | Wastebin</title>
     <style>
       html, body, iframe {
@@ -115,22 +92,28 @@ app.get("/:filename", async (req, res) => {
         margin: 0;
         padding: 0;
       }
-      body {
-        overflow: hidden;
-      }
       iframe {
         width: 100%;
         border: 0;
       }
+      .markdown-body {
+        box-sizing: border-box;
+        min-width: 200px;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 45px;
+      }
+      @media (max-width: 767px) {
+        .markdown-body {
+          padding: 15px;
+        }
+      }
     </style>
   </head>
   <body>
-    <iframe sandbox="allow-scripts allow-popups allow-popups-to-escape-sandbox"></iframe>
+    <div class="markdown-body">${mdHtml}</div>
   </body>
-  </html>
-
-  <script>document.querySelector("iframe").srcdoc=\`${iframeSrcDoc}\`</script>
-
+</html>
 `
 
   return res.send(html)
