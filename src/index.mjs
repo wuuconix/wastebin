@@ -75,6 +75,7 @@ app.get("/:filename", async (req, res) => {
   console.log(filename)
 
   const mdHtml = await (await fetch(`${config.api}/parse/${filename}`)).text()
+  const mdHtmlBase64 = utf8ToB64(mdHtml)
 
   const html = `<!DOCTYPE html>
   <html lang="en">
@@ -91,6 +92,9 @@ app.get("/:filename", async (req, res) => {
         height: 100%;
         margin: 0;
         padding: 0;
+      }
+      body {
+        overflow: hidden;
       }
       iframe {
         width: 100%;
@@ -111,8 +115,26 @@ app.get("/:filename", async (req, res) => {
     </style>
   </head>
   <body>
-    <div class="markdown-body">${mdHtml}</div>
+    <iframe></iframe>
   </body>
+
+  <script>
+    function b64ToUtf8(str) {
+      return decodeURIComponent(escape(window.atob(str)));
+    }
+    const base64_1 = "PGhlYWQ+PG1ldGEgY2hhcnNldD0iVVRGLTgiPjxtZXRhIGh0dHAtZXF1aXY9IlgtVUEtQ29tcGF0aWJsZSIgY29udGVudD0iSUU9ZWRnZSI+PG1ldGEgbmFtZT0idmlld3BvcnQiIGNvbnRlbnQ9IndpZHRoPWRldmljZS13aWR0aCwgaW5pdGlhbC1zY2FsZT0xLjAiPjxsaW5rIHJlbD0ic3R5bGVzaGVldCIgaHJlZj0iaHR0cHM6Ly9qc2Qub25taWNyb3NvZnQuY24vZ2gvaGlnaGxpZ2h0anMvaGlnaGxpZ2h0LmpzQGxhdGVzdC9zcmMvc3R5bGVzL2dpdGh1Yi5jc3MiPjxsaW5rIHJlbD0ic3R5bGVzaGVldCIgaHJlZj0iaHR0cHM6Ly9qc2Qub25taWNyb3NvZnQuY24vbnBtL2dpdGh1Yi1tYXJrZG93bi1jc3NAbGF0ZXN0L2dpdGh1Yi1tYXJrZG93bi1saWdodC5jc3MiPjxzdHlsZT4ubWFya2Rvd24tYm9keSB7Ym94LXNpemluZzogYm9yZGVyLWJveDttaW4td2lkdGg6IDIwMHB4O21heC13aWR0aDogMTIwMHB4O21hcmdpbjogMCBhdXRvO3BhZGRpbmc6IDQ1cHg7fUBtZWRpYSAobWF4LXdpZHRoOiA3NjdweCkgey5tYXJrZG93bi1ib2R5IHtwYWRkaW5nOiAxNXB4O319PC9zdHlsZT48L2hlYWQ+PGRpdiBjbGFzcz0ibWFya2Rvd24tYm9keSI+"
+    const base64_2 = "${mdHtmlBase64}"
+    const base64_3 = "PC9kaXY+"
+
+    const srcDoc = b64ToUtf8(base64_1) + b64ToUtf8(base64_2) + b64ToUtf8(base64_3)
+    const blob = new Blob([srcDoc], {
+      type: "text/html",
+    });
+    const url = URL.createObjectURL(blob);
+    console.log(url)
+
+    document.querySelector("iframe").src = url
+  </script>
 </html>
 `
 
@@ -152,4 +174,8 @@ function getTime() {
   const min = String(date.getMinutes()).padStart(2, "0")
   const sec = String(date.getSeconds()).padStart(2, "0")
   return `${year}${month}${day}${hour}${min}${sec}`
+}
+
+function utf8ToB64(str) {
+  return btoa(unescape(encodeURIComponent(str)));
 }
