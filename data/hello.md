@@ -44,14 +44,14 @@ let prevHash = location.hash
 
 if (location.hash != "") {
     setuArea.style.display = "flex"
-    setu.src = "https://api.wuuconix.link/setu?redirect&no-store"
+    setu.src = `https://api.wuuconix.link/setu?redirect&no-store&r=${Math.random()}`
     setu.classList.add(`animate__${location.hash.replace("#", "").replace("animate__", "")}`)
 }
 
 window.onhashchange = () => {
     if (location.hash == "#setu") {
         setuArea.style.display = "flex"
-        setu.src = "https://api.wuuconix.link/setu?redirect&no-store"
+        setu.src = `https://api.wuuconix.link/setu?redirect&no-store&r=${Math.random()}`
         prevHash = location.hash
         return
     }
