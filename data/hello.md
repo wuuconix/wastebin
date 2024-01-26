@@ -13,7 +13,7 @@ And here is a random 👉[**setu**](#setu)👈 as your gift!
 
 <div id="setuArea" style="display: none; justify-content: space-between;">
 
-<div>
+<div id="animateName" style="display: none">
 
 > And Make It Animate! 💕
 
@@ -40,18 +40,19 @@ And here is a random 👉[**setu**](#setu)👈 as your gift!
 <script>
 const setuArea = document.querySelector("#setuArea")
 const setu = document.querySelector("#setu")
+const animateName = document.querySelector("#animateName")
 let prevHash = location.hash
 
 if (location.hash != "") {
     setuArea.style.display = "flex"
-    setu.src = `https://api.wuuconix.link/setu?redirect&no-store&r=${Math.random()}`
+    setu.src = getRandomSetuSrc()
     setu.classList.add(`animate__${location.hash.replace("#", "").replace("animate__", "")}`)
 }
 
 window.onhashchange = () => {
     if (location.hash == "#setu") {
         setuArea.style.display = "flex"
-        setu.src = `https://api.wuuconix.link/setu?redirect&no-store&r=${Math.random()}`
+        setu.src = getRandomSetuSrc()
         prevHash = location.hash
         return
     }
@@ -63,4 +64,24 @@ window.onhashchange = () => {
     }
 }
 
+setu.onload = () => {
+    animateName.style.display = "block"
+    animateName.classList.add("animate__animated")
+    animateName.classList.add("animate__backInLeft")
+}
+
+setu.onerror = () => {
+    setu.src = `https://api.wuuconix.link/setu?redirect&no-store&r18=${r18}&r=${Math.random()}`
+}
+
+function getRandomSetuSrc() {
+    const r18 = new URLSearchParams(location.search).get("r18") ?? 0 
+    const src = new URLSearchParams(location.search).get("src")
+    
+    if (src) {
+        return src
+    }
+
+    return `https://api.wuuconix.link/setu?redirect&no-store&r18=${r18}&r=${Math.random()}`
+}
 </script>
