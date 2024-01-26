@@ -18,18 +18,19 @@ And here is a random 👉[**setu**](#setu)👈 as your gift!
 > And Make It Animate! 💕
 
 + [bounce](#bounce)
-+ [flash](#flash)
 + [pulse](#pulse)
 + [rubberBand](#rubberBand)
 + [shakeX](#shakeX)
 + [shakeY](#shakeY)
-+ [headShake](#headShake)
 + [swing](#swing)
 + [tada](#tada)
 + [wobble](#wobble)
 + [jello](#jello)
-+ [heartBeat](#heartBeat)
-+ [...](https://animate.style/)
++ [flip](#flip)
++ [flipInX](#flipInX)
++ [flipInY](#flipInY)
++ [flipOutX](#flipOutX)
++ [flipOutY](#flipOutY)
 
 </div>
 
@@ -41,6 +42,7 @@ And here is a random 👉[**setu**](#setu)👈 as your gift!
 const setuArea = document.querySelector("#setuArea")
 const setu = document.querySelector("#setu")
 const animateName = document.querySelector("#animateName")
+const r18 = new URLSearchParams(location.search).get("r18") ?? 0 
 let prevHash = location.hash
 
 if (location.hash != "") {
@@ -75,7 +77,6 @@ setu.onerror = () => {
 }
 
 function getRandomSetuSrc() {
-    const r18 = new URLSearchParams(location.search).get("r18") ?? 0 
     const src = new URLSearchParams(location.search).get("src")
     
     if (src) {
