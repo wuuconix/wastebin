@@ -74,165 +74,97 @@ app.get("/:filename", async (req, res) => {
   const filename = req.params.filename || "hello.md"
   console.log(filename)
 
-  /* 如果是欢迎页 不使用iframe渲染 支持拖拽上传文件 */
-  if (filename == "hello.md") {
-    const mdHtml = await (await fetch(`${config.api}/parse/${filename}`)).text()
-    const html = `<!DOCTYPE html>
-  <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cn.bing.com/sa/simg/favicon-trans-bg-blue-mg.ico" data-orighref="" rel="icon" />
-    <link rel="stylesheet" href="https://jsd.onmicrosoft.cn/gh/highlightjs/highlight.js@latest/src/styles/github.css">
-    <link rel="stylesheet" href="https://jsd.onmicrosoft.cn/npm/github-markdown-css@latest/github-markdown-light.css">
-    <link rel="stylesheet" href="https://cdnjs.onmicrosoft.cn/ajax/libs/animate.css/4.1.1/animate.min.css"/>
-    <title>${filename} | Wastebin</title>
-    <style>
-      html, body, iframe {
-        height: 100%;
-        margin: 0;
-        padding: 0;
-      }
-      iframe {
-        width: 100%;
-        border: 0;
-      }
-      .markdown-body {
-        box-sizing: border-box;
-        min-width: 200px;
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 45px;
-      }
-      @media (max-width: 767px) {
-        .markdown-body {
-          padding: 15px;
-        }
-      }
-    </style>
-  </head>
-  <body ondrop="dropHandler(event)" ondragover="dragOverHandler(event)">
-    <div class="markdown-body">${mdHtml}</div>
-  </body>
-  
-  <script>
-    function dragOverHandler(ev) {
-      ev.preventDefault()
+  const mdHtml = await (await fetch(`${config.api}/parse/${filename}`)).text()
+  const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cn.bing.com/sa/simg/favicon-trans-bg-blue-mg.ico" data-orighref="" rel="icon" />
+  <link rel="stylesheet" href="https://jsd.onmicrosoft.cn/gh/highlightjs/highlight.js@latest/src/styles/github.css">
+  <link rel="stylesheet" href="https://jsd.onmicrosoft.cn/npm/github-markdown-css@latest/github-markdown-light.css">
+  <link rel="stylesheet" href="https://cdnjs.onmicrosoft.cn/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+  <title>${filename} | Wastebin</title>
+  <style>
+    html, body, iframe {
+      height: 100%;
+      margin: 0;
+      padding: 0;
     }
+    iframe {
+      width: 100%;
+      border: 0;
+    }
+    .markdown-body {
+      box-sizing: border-box;
+      min-width: 200px;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 45px;
+    }
+    @media (max-width: 767px) {
+      .markdown-body {
+        padding: 15px;
+      }
+    }
+  </style>
+</head>
+<body ondrop="dropHandler(event)" ondragover="dragOverHandler(event)">
+  <div class="markdown-body">${mdHtml}</div>
+</body>
 
-    function dropHandler(ev) {
-      ev.preventDefault()
+<script>
+  function dragOverHandler(ev) {
+    ev.preventDefault()
+  }
 
-      if (ev.dataTransfer.items) {
-        for (let i = 0; i < ev.dataTransfer.items.length; i++) {
-          if (ev.dataTransfer.items[i].kind === "file") {
-            const file = ev.dataTransfer.items[i].getAsFile()
-            handleFile(file)
-            break
-          }
-        }
-      } else {
-        for (let i = 0; i < ev.dataTransfer.files.length; i++) {
-          const file = ev.dataTransfer.files[0]
+  function dropHandler(ev) {
+    ev.preventDefault()
+
+    if (ev.dataTransfer.items) {
+      for (let i = 0; i < ev.dataTransfer.items.length; i++) {
+        if (ev.dataTransfer.items[i].kind === "file") {
+          const file = ev.dataTransfer.items[i].getAsFile()
           handleFile(file)
           break
         }
       }
-    }
-
-    function handleFile(file) {
-      if (file.type == "" || file.type.startsWith("text")) {
-        console.log(file)
-        const reader = new FileReader()
-        reader.readAsText(file, 'UTF-8')
-        reader.onload = async (e) => {
-          console.log(e.target.result)
-          const res = await (await fetch("/add/" + file.name, {
-            method: "post",
-            body: new URLSearchParams({ code: e.target.result })
-          })).json()
-
-          if (res.url) {
-            location.assign(res.url)
-          }
-        }
-      } else {
-        console.log("不支持上传" + file.type + "格式的文件")
+    } else {
+      for (let i = 0; i < ev.dataTransfer.files.length; i++) {
+        const file = ev.dataTransfer.files[0]
+        handleFile(file)
+        break
       }
     }
-  </script>
-</html>
-`
-    
-    return res.send(html)
   }
 
-  const mdHtml = await (await fetch(`${config.api}/parse/${filename}`)).text()
-  const mdHtmlBase64 = utf8ToB64(mdHtml)
+  function handleFile(file) {
+    if (file.type == "" || file.type.startsWith("text")) {
+      console.log(file)
+      const reader = new FileReader()
+      reader.readAsText(file, 'UTF-8')
+      reader.onload = async (e) => {
+        console.log(e.target.result)
+        const res = await (await fetch("/add/" + file.name, {
+          method: "post",
+          body: new URLSearchParams({ code: e.target.result })
+        })).json()
 
-  const html = `<!DOCTYPE html>
-  <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cn.bing.com/sa/simg/favicon-trans-bg-blue-mg.ico" data-orighref="" rel="icon" />
-    <link rel="stylesheet" href="https://jsd.onmicrosoft.cn/gh/highlightjs/highlight.js@latest/src/styles/github.css">
-    <link rel="stylesheet" href="https://jsd.onmicrosoft.cn/npm/github-markdown-css@latest/github-markdown-light.css">
-    <title>${filename} | Wastebin</title>
-    <style>
-      html, body, iframe {
-        height: 100%;
-        margin: 0;
-        padding: 0;
-      }
-      body {
-        overflow: hidden;
-      }
-      iframe {
-        width: 100%;
-        border: 0;
-      }
-      .markdown-body {
-        box-sizing: border-box;
-        min-width: 200px;
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 45px;
-      }
-      @media (max-width: 767px) {
-        .markdown-body {
-          padding: 15px;
+        if (res.url) {
+          location.assign(res.url)
         }
       }
-    </style>
-  </head>
-  <body>
-    <iframe></iframe>
-  </body>
-
-  <script>
-    function b64ToUtf8(str) {
-      return decodeURIComponent(escape(window.atob(str)));
+    } else {
+      console.log("不支持上传" + file.type + "格式的文件")
     }
-    const base64_1 = "PGhlYWQ+PG1ldGEgY2hhcnNldD0iVVRGLTgiPjxtZXRhIGh0dHAtZXF1aXY9IlgtVUEtQ29tcGF0aWJsZSIgY29udGVudD0iSUU9ZWRnZSI+PG1ldGEgbmFtZT0idmlld3BvcnQiIGNvbnRlbnQ9IndpZHRoPWRldmljZS13aWR0aCwgaW5pdGlhbC1zY2FsZT0xLjAiPjxsaW5rIHJlbD0ic3R5bGVzaGVldCIgaHJlZj0iaHR0cHM6Ly9qc2Qub25taWNyb3NvZnQuY24vZ2gvaGlnaGxpZ2h0anMvaGlnaGxpZ2h0LmpzQGxhdGVzdC9zcmMvc3R5bGVzL2dpdGh1Yi5jc3MiPjxsaW5rIHJlbD0ic3R5bGVzaGVldCIgaHJlZj0iaHR0cHM6Ly9qc2Qub25taWNyb3NvZnQuY24vbnBtL2dpdGh1Yi1tYXJrZG93bi1jc3NAbGF0ZXN0L2dpdGh1Yi1tYXJrZG93bi1saWdodC5jc3MiPjxzdHlsZT4ubWFya2Rvd24tYm9keSB7Ym94LXNpemluZzogYm9yZGVyLWJveDttaW4td2lkdGg6IDIwMHB4O21heC13aWR0aDogMTIwMHB4O21hcmdpbjogMCBhdXRvO3BhZGRpbmc6IDQ1cHg7fUBtZWRpYSAobWF4LXdpZHRoOiA3NjdweCkgey5tYXJrZG93bi1ib2R5IHtwYWRkaW5nOiAxNXB4O319PC9zdHlsZT48L2hlYWQ+PGRpdiBjbGFzcz0ibWFya2Rvd24tYm9keSI+"
-    const base64_2 = "${mdHtmlBase64}"
-    const base64_3 = "PC9kaXY+"
-
-    const srcDoc = b64ToUtf8(base64_1) + b64ToUtf8(base64_2) + b64ToUtf8(base64_3)
-    const blob = new Blob([srcDoc], {
-      type: "text/html",
-    });
-    const url = URL.createObjectURL(blob);
-    console.log(url)
-
-    document.querySelector("iframe").src = url
-  </script>
+  }
+</script>
 </html>
 `
-
+  
   return res.send(html)
+
 })
 
 app.get("/", async (req, res) => {
