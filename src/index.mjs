@@ -49,6 +49,22 @@ app.get("/raw/:filename", async (req, res) => {
   }
 })
 
+/* mp接口，效果同raw 用于返回微信js鉴权txt */
+app.get("/mp/:filename", async (req, res) => {
+  const { filename } = req.params
+  const path = normalize(`${__dirname}/../data/${filename}`)
+  try {
+    log(`/mp/${filename}`)
+    await access(path)
+    const mimeType = mimeTypeMap.get(extname(filename)) ?? "text/plain"
+    res.setHeader("Content-Type", `${mimeType};charset=UTF-8`)
+    return res.sendFile(path)
+  } catch(e) {
+    console.log(e)
+    return res.json({ err: "no such file" })
+  }
+})
+
 /* parse接口 将各类编程语言转成md中的代码块从而获得高亮提示 */
 app.get("/parse/:filename", async (req, res) => {
   const { filename } = req.params
