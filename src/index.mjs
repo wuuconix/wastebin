@@ -2,9 +2,12 @@ import { marked } from "marked"
 import hljs from "highlight.js"
 import express from "express"
 import { access, readFile, writeFile } from "fs/promises"
+import { createRequire } from "module"
 import { dirname, normalize, extname } from 'path'
 import { fileURLToPath } from 'url'
-import config from "../config.json" assert { type: "json" }
+
+const require = createRequire(import.meta.url)
+const config = require("../config.json")
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 
@@ -33,49 +36,18 @@ const mimeTypeMap = new Map([
   [".css", "text/css"]
 ])
 
-/* raw接口 返回文件的源码 */
-app.get("/raw/:filename", async (req, res) => {
-  const { filename } = req.params
+async function renderPreviewPage(filename) {
   const path = normalize(`${__dirname}/../data/${filename}`)
-  try {
-    log(`/raw/${filename}`)
-    await access(path)
-    const mimeType = mimeTypeMap.get(extname(filename)) ?? "text/plain"
-    res.setHeader("Content-Type", `${mimeType};charset=UTF-8`)
-    return res.sendFile(path)
-  } catch(e) {
-    console.log(e)
-    return res.json({ err: "no such file" })
+  let md = await readFile(path, { encoding: "utf-8" })
+
+  if (extname(filename) != ".md") {
+    const rawMark = `🔍raw: ${config.api}/raw/${filename}\n`
+    md = rawMark + "```" + (extname(filename).slice(1) ?? "") + "\n" + md + "\n" + "```"
   }
-})
 
-/* parse接口 将各类编程语言转成md中的代码块从而获得高亮提示 */
-app.get("/parse/:filename", async (req, res) => {
-  const { filename } = req.params
-  const path = normalize(`${__dirname}/../data/${filename}`)
-  try {
-    log(`/parse/${filename}`)
-    let md = await readFile(path, { encoding: "utf-8" })
-    if (extname(filename) != ".md") {    // 如果不是md，则加上代码区域```变成md
-      const rawMark = `🔍raw: ${config.api}/raw/${filename}\n`
-      md = rawMark + "```" + (extname(filename).slice(1) ?? "") + "\n" + md + "\n" + "```"
-    }
-    const html = parseMdToHtml(md)
-    res.setHeader("Content-Type", "text/plain;charset=UTF-8")
-    return res.send(html)
-  } catch(e) {
-    console.log(e)
-    return res.json({ err: "no such file" })
-  }
-})
+  const mdHtml = parseMdToHtml(md)
 
-/* 预览文件 */
-app.get("/:filename", async (req, res) => {
-  const filename = req.params.filename || "hello.md"
-  console.log(filename)
-
-  const mdHtml = await (await fetch(`${config.api}/parse/${filename}`)).text()
-  const html = `<!DOCTYPE html>
+  return `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -162,14 +134,64 @@ app.get("/:filename", async (req, res) => {
 </script>
 </html>
 `
-  
-  return res.send(html)
+}
+
+/* raw接口 返回文件的源码 */
+app.get("/raw/:filename", async (req, res) => {
+  const { filename } = req.params
+  const path = normalize(`${__dirname}/../data/${filename}`)
+  try {
+    log(`/raw/${filename}`)
+    await access(path)
+    const mimeType = mimeTypeMap.get(extname(filename)) ?? "text/plain"
+    res.setHeader("Content-Type", `${mimeType};charset=UTF-8`)
+    return res.sendFile(path)
+  } catch(e) {
+    console.log(e)
+    return res.json({ err: "no such file" })
+  }
+})
+
+/* parse接口 将各类编程语言转成md中的代码块从而获得高亮提示 */
+app.get("/parse/:filename", async (req, res) => {
+  const { filename } = req.params
+  const path = normalize(`${__dirname}/../data/${filename}`)
+  try {
+    log(`/parse/${filename}`)
+    let md = await readFile(path, { encoding: "utf-8" })
+    if (extname(filename) != ".md") {    // 如果不是md，则加上代码区域```变成md
+      const rawMark = `🔍raw: ${config.api}/raw/${filename}\n`
+      md = rawMark + "```" + (extname(filename).slice(1) ?? "") + "\n" + md + "\n" + "```"
+    }
+    const html = parseMdToHtml(md)
+    res.setHeader("Content-Type", "text/plain;charset=UTF-8")
+    return res.send(html)
+  } catch(e) {
+    console.log(e)
+    return res.json({ err: "no such file" })
+  }
+})
+
+/* 预览文件 */
+app.get("/:filename", async (req, res) => {
+  const filename = req.params.filename || "hello.md"
+  try {
+    console.log(filename)
+    return res.send(await renderPreviewPage(filename))
+  } catch(e) {
+    console.log(e)
+    return res.status(404).send("no such file")
+  }
 
 })
 
 app.get("/", async (req, res) => {
-  const html = await (await fetch(`${config.api}/hello.md`)).text()
-  return res.send(html)
+  try {
+    return res.send(await renderPreviewPage("hello.md"))
+  } catch(e) {
+    console.log(e)
+    return res.status(500).send("failed to load default page")
+  }
 })
 
 app.listen(7777, "0.0.0.0", () => {
